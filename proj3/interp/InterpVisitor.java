@@ -1,5 +1,7 @@
 package interp;
 
+import ir.*;
+
 public class InterpVisitor implements IntVI {
     private final int maxTemps = 512;
     private final int maxStack = 2048;
@@ -28,18 +30,85 @@ public class InterpVisitor implements IntVI {
 
     // keeping a copy of current statement list
     private STMTlist stmts = null; 
-}
 
-public int visit(STMTlist sl) throws Exception {
-    int ret = STATUS_DEFAULT;
-    int i = 0;
-    while (i < sl.size()) {
-        int next = ((STMT) sl.elementAt(i)).accept(this);
-        if (next == STATUS_RETURN) {
-            ret = STATUS_RETURN;
-            break;
+    public InterpVisitor() {}
+
+    public int visit(STMTlist sl) throws Exception {
+        int ret = STATUS_DEFAULT;
+        int i = 0;
+        while (i < sl.size()) {
+            int next = ((STMT) sl.elementAt(i)).accept(this);
+            if (next == STATUS_RETURN) {
+                ret = STATUS_RETURN;
+                break;
+            }
+            i = (next >= 0) ? next : i+1;
         }
-        i = (next >= 0) ? next : i+1;
+        return ret;
     }
-    return ret;
+    
+    public void visit(PROG p) throws Exception {
+        funcs = p.funcs;
+        FUNC mf = findFunc("main");
+        mf.accept(this);
+    }
+    
+    public void visit(FUNC f) throws Exception {
+        stmts = f.stmts;
+        sp = sp - f.varCnt - f.argCnt - 1;
+        f.stmts.accept(this);
+        sp = sp + f.varCnt + f.argCnt + 1;
+    }
+
+    public int visit(MOVE s) throws Exception {
+        int val = s.src.accept(this);
+        if (s.dst instanceof TEMP) {
+            temps[((TEMP) s.dst).num] = val;
+        }
+        else if (s.dst instanceof MEM) {
+            // ...
+        }
+        // TEMP, MEM, FIELD, PARAM, or VAR
+        else if (s.dst instanceof FIELD) {
+            // ...
+        }
+        else if (s.dst instanceof PARAM) {
+            // ...
+        }
+        else if (s.dst instanceof VAR) {
+            // ...
+        }
+        else {
+            throw new Exception("Unrecognized RHS expression in MOVE");
+        }
+        return STATUS_DEFAULT;
+    }
+
+    public int visit(JUMP s) throws Exception {
+        return findStmtIdx(s.target);
+    }
+    
+    public int visit(BINOP e) throws Exception {
+        // evaluate both operands to lval and rval switch (e.op) {
+    case BINOP.ADD: return lval + rval;
+        // ...
+    }
+
+    public int visit(CALLST s) throws Exception {
+        // ...
+        if (fname.equals("print")) {
+            // ... 
+            // Call System.out.println()
+        } else {
+            //...
+            // evaluate args
+            stack[sp] = fp;
+            fp = sp;
+            f.accept(this);
+            sp = fp;
+            fp = stack[sp];
+            // ...
+        }
+        // ...
+    }
 }
