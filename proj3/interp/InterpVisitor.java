@@ -47,11 +47,22 @@ public class InterpVisitor implements IntVI {
         return ret;
     }
     
+    private FUNC findFunc(String name) throws Exception {
+        for (int i = 0; i < funcs.size(); i++) {
+            FUNC currentFunc = funcs.elementAt(i);
+            if (name.equals(currentFunc.label))
+                return currentFunc;
+        }
+        throw new Exception("Function "+name+" not found.");
+    }
+
     public void visit(PROG p) throws Exception {
         funcs = p.funcs;
         FUNC mf = findFunc("main");
         mf.accept(this);
     }
+
+    public void visit(FUNClist f) throws Exception {}
     
     public void visit(FUNC f) throws Exception {
         stmts = f.stmts;
@@ -66,17 +77,19 @@ public class InterpVisitor implements IntVI {
             temps[((TEMP) s.dst).num] = val;
         }
         else if (s.dst instanceof MEM) {
-            // ...
+            int index = ((MEM) s.dst).exp.accept(this);
+            heap[index] = val;
         }
-        // TEMP, MEM, FIELD, PARAM, or VAR
         else if (s.dst instanceof FIELD) {
-            // ...
+            FIELD f = (FIELD) s.dst;
+            int index = f.obj.accept(this);
+            heap[index + f.idx] = val;
         }
         else if (s.dst instanceof PARAM) {
-            // ...
+            stack[fp + ((PARAM) s.dst).idx + 1] = val;
         }
         else if (s.dst instanceof VAR) {
-            // ...
+            stack[fp - ((VAR) s.dst).idx] = val;
         }
         else {
             throw new Exception("Unrecognized RHS expression in MOVE");
@@ -84,31 +97,135 @@ public class InterpVisitor implements IntVI {
         return STATUS_DEFAULT;
     }
 
-    public int visit(JUMP s) throws Exception {
-        return findStmtIdx(s.target);
+    public int visit(LABEL l) throws Exception {
+        return STATUS_DEFAULT;
+    }
+
+    public int visit(RETURN r) throws Exception {
+        if (r.exp != null)
+            retVal = r.exp.accept(this);
+        return STATUS_RETURN;
+    }
+
+    public int visit(EXPlist e) throws Exception {
+        return STATUS_DEFAULT;
+    }
+
+    public int visit(ESEQ e) throws Exception {
+        return STATUS_DEFAULT;
+    }
+
+    public int visit(BINOP e) throws Exception {
+        int lval = e.left.accept(this);
+        int rval = e.right.accept(this);
+        switch (e.op) {
+        case BINOP.ADD: return lval + rval;
+        case BINOP.SUB: return lval - rval;
+        case BINOP.MUL: return lval * rval;
+        case BINOP.DIV: return lval / rval;
+        case BINOP.AND: return lval * rval; // 1*1=1, 1*0=0
+        case BINOP.OR:  return (lval == 1 || rval == 1)? 1 : 0;
+        default:        throw new Exception("You're an IDIOT!"+
+                                            " That's not an op!");
+        }
+    }
+
+    public int visit(TEMP t) throws Exception {
+        return temps[t.num];
+    }
+
+    public int visit(MEM m) throws Exception {
+        int index = m.exp.accept(this);
+        return heap[index];
+    }
+
+    public int visit(FIELD f) throws Exception {
+        int index = f.obj.accept(this);
+        return heap[index + f.idx];
+    }
+
+    public int visit(PARAM p) throws Exception {
+        return stack[fp + p.idx + 1];       
+    }
+
+    public int visit(VAR v) throws Exception {
+        return stack[fp - v.idx];
+    }
+
+    public int visit(CONST c) throws Exception {
+        return c.val;
     }
     
-    public int visit(BINOP e) throws Exception {
-        // evaluate both operands to lval and rval switch (e.op) {
-    case BINOP.ADD: return lval + rval;
-        // ...
+    public int visit(FLOAT f) throws Exception {
+        return (int) f.val;
+    }
+
+    public int visit(NAME n) throws Exception {
+        // word size
+        return 1;
+    }
+
+    public int visit(STRING s) throws Exception {
+        return Integer.parseInt(s.s);
+    }
+
+    private int findStmtIdx(NAME target) throws Exception {
+        for (int i = 0; i < stmts.size(); i++) {
+            STMT currentStmt = stmts.elementAt(i);
+            if (currentStmt instanceof LABEL) {
+                if (target.id.equals(((LABEL) currentStmt).lab))
+                    return i;
+            }
+        }
+        throw new Exception("Label "+target.id+" not found.");
+    }
+
+    public int visit(JUMP j) throws Exception {
+        return findStmtIdx(j.target);
+    }
+    
+    public int visit(CJUMP cj) throws Exception {
+        int lval = cj.left.accept(this);
+        int rval = cj.right.accept(this);
+        boolean result;
+        switch (cj.op) {
+        case CJUMP.EQ: result = lval == rval; break;
+        case CJUMP.NE: result = lval != rval; break;
+        case CJUMP.LT: result = lval <  rval; break;
+        case CJUMP.LE: result = lval <= rval; break;
+        case CJUMP.GT: result = lval >  rval; break;
+        case CJUMP.GE: result = lval >= rval; break;
+        default:       throw new Exception("You're an IDIOT!"+
+                                           " That's not an op!");
+        }
+        if (result)
+            return findStmtIdx(cj.target);
+        else
+            return STATUS_DEFAULT;
+    }
+
+    public int visit(CALL c) throws Exception {
+        return STATUS_DEFAULT;
     }
 
     public int visit(CALLST s) throws Exception {
-        // ...
+        String fname = s.func.id;
         if (fname.equals("print")) {
-            // ... 
-            // Call System.out.println()
+            if (s.args.size() == 1)
+                System.out.println(s.args.elementAt(0).accept(this));
+            else
+                System.out.println();
         } else {
             //...
             // evaluate args
             stack[sp] = fp;
             fp = sp;
-            f.accept(this);
+            //f.accept(this);
             sp = fp;
             fp = stack[sp];
             // ...
         }
         // ...
+        return STATUS_DEFAULT;
     }
 }
