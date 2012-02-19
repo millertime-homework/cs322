@@ -65,10 +65,12 @@ public class InterpVisitor implements IntVI {
     public void visit(FUNClist f) throws Exception {}
     
     public void visit(FUNC f) throws Exception {
+        STMTlist tmp = stmts;
         stmts = f.stmts;
         sp = sp - f.varCnt - f.argCnt - 1;
         f.stmts.accept(this);
         sp = sp + f.varCnt + f.argCnt + 1;
+        stmts = tmp;
     }
 
     public int visit(MOVE s) throws Exception {
@@ -208,6 +210,7 @@ public class InterpVisitor implements IntVI {
         String fname = c.func.id;
         if (fname.equals("malloc")) {
             hp = hp - c.args.elementAt(0).accept(this);
+            retVal = hp;
         } else {
             for (int i = 0; i < c.args.size(); i++)
                 stack[sp + i + 1] = c.args.elementAt(i).accept(this);
