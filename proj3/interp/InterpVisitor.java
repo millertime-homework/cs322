@@ -205,27 +205,44 @@ public class InterpVisitor implements IntVI {
     }
 
     public int visit(CALL c) throws Exception {
-        return STATUS_DEFAULT;
+        String fname = c.func.id;
+        if (fname.equals("malloc")) {
+            hp = hp - c.args.elementAt(0).accept(this);
+        } else {
+            for (int i = 0; i < c.args.size(); i++)
+                stack[sp + i + 1] = c.args.elementAt(i).accept(this);
+            stack[sp] = fp;
+            fp = sp;
+            FUNC f = findFunc(c.func.id);
+            f.accept(this);
+            sp = fp;
+            fp = stack[sp];
+        }
+        return retVal;
     }
 
     public int visit(CALLST s) throws Exception {
         String fname = s.func.id;
         if (fname.equals("print")) {
-            if (s.args.size() == 1)
-                System.out.println(s.args.elementAt(0).accept(this));
+            if (s.args.size() == 1) {
+                EXP firstExp = s.args.elementAt(0);
+                if (firstExp instanceof STRING)
+                    System.out.println(((STRING) firstExp).s);
+                else
+                    System.out.println(firstExp.accept(this));
+            }
             else
                 System.out.println();
         } else {
-            //...
-            // evaluate args
+            for (int i = 0; i < s.args.size(); i++)
+                stack[sp + i + 1] = s.args.elementAt(i).accept(this);
             stack[sp] = fp;
             fp = sp;
-            //f.accept(this);
+            FUNC f = findFunc(s.func.id);
+            f.accept(this);
             sp = fp;
             fp = stack[sp];
-            // ...
         }
-        // ...
         return STATUS_DEFAULT;
     }
 }
