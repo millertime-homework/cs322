@@ -4,7 +4,7 @@ int *scan(int *a, int n)
 {
   if (n <= 0)
     return 0;
-  int *result = malloc (n+1);
+  int *result = (int*) malloc((n+1)*sizeof(int));
   int sum = 0;
   result[n] = 0;
   int i;
