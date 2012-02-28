@@ -1,4 +1,4 @@
-    .section    ".text"
+    .section    ".text"     ! Russell Miller CS322 2012
     .align 4
     .global scan
 scan:
