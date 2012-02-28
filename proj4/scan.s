@@ -1,11 +1,8 @@
-	.file	"scan.c"
 	.section	".text"
 	.align 4
 	.global scan
 scan:
-	!#PROLOGUE# 0
 	save	%sp, -112, %sp
-	!#PROLOGUE# 1
 	cmp	%i1, 0
 	ble	.LL1
 	mov	0, %o0
