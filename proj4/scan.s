@@ -30,5 +30,3 @@ scan:
 .LL1:
 	ret
 	restore %g0, %o0, %o0
-	.size	scan, .-scan
-	.ident	"GCC: (GNU) 3.4.3 (csl-sol210-3_4-branch+sol_rpath)"
