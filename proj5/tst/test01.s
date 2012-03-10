@@ -9,10 +9,20 @@ main:
 	call printf
 	nop
 ! [CALLST (NAME print) ( (CONST 123))]
+	mov 123,%o1
+	sethi %hi(L$1),%o0
+	or %o0, %lo(L$1),%o0
+	call printf
+	nop
 ! [CALLST (NAME print) ()]
 ! [CALLST (NAME print) ( (CONST 1))]
+	mov 1,%o1
+	sethi %hi(L$1),%o0
+	or %o0, %lo(L$1),%o0
+	call printf
+	nop
 L$1:	.asciz "%d\n"
 L$2:	.asciz "123\n"
 
-!Total regs:  1
-!Total insts: 10
+!Total regs:  2
+!Total insts: 20
