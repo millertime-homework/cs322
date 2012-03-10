@@ -35,6 +35,9 @@ public class CodegenVisitor implements CodeVI {
         f.stmts.accept(this);
         Sparc.freeAllRegs();
         // ...
+        Sparc.emit0("ret");
+        Sparc.emit0("restore");
+        Sparc.emitNonInst("\n");
     }
 
     public void visit(FUNClist fl) throws Exception {
@@ -163,7 +166,11 @@ public class CodegenVisitor implements CodeVI {
         }
     }
 
-    public void visit(RETURN t) throws Exception {}
+    public void visit(RETURN t) throws Exception {
+        Sparc.emit0("ret");
+        Sparc.emit0("return");
+    }
+
     //public Operand visit(EXP t) throws Exception {}
     public Operand visit(EXPlist t) throws Exception { return null; }
     public Operand visit(ESEQ t) throws Exception { return null; }
