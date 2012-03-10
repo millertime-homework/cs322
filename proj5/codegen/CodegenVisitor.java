@@ -34,7 +34,7 @@ public class CodegenVisitor implements CodeVI {
         Sparc.emit0("save %sp,-" + framesize + ",%sp");
         f.stmts.accept(this);
         Sparc.freeAllRegs();
-        // ...
+        // ...?
         Sparc.emit0("ret");
         Sparc.emit0("restore");
         Sparc.emitNonInst("\n");
@@ -92,7 +92,9 @@ public class CodegenVisitor implements CodeVI {
         // ...
     }
 
-    public void visit(LABEL t) throws Exception {}
+    public void visit(LABEL t) throws Exception {
+        Sparc.emitNonInst("L$"+t.lab+":\n");
+    }
 
     public void visit(CALLST s) throws Exception {
         String fname = s.func.id;
