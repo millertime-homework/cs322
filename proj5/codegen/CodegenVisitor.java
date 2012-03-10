@@ -18,7 +18,8 @@ public class CodegenVisitor implements CodeVI {
 
     public void visit(PROG p) throws Exception {
         p.funcs.accept(this);
-        //printStrConsts();
+        for (int i = 1; i < strCnt; i++)
+            Sparc.emitString(strBuf[i]);
         Sparc.printStats();
     }
 
@@ -53,9 +54,10 @@ public class CodegenVisitor implements CodeVI {
 
     public void visit(MOVE s) throws Exception {
         Operand src = s.src.accept(this);
-        Reg r = null;
+        Reg r = Sparc.getReg();
+        toReg(src, r);
         // generate code for s.src and bring result to a reg r
-        // ...
+        // I DON'T KNOW WHAT I'M DOING
         if (s.dst instanceof TEMP) {
             Operand dst = s.dst.accept(this);
             Sparc.emit2("mov", src, dst);
@@ -67,6 +69,7 @@ public class CodegenVisitor implements CodeVI {
         } else {
             // ...
         }
+        Sparc.freeReg(r);
     }
 
     public void visit(JUMP s) throws Exception {
@@ -171,5 +174,4 @@ public class CodegenVisitor implements CodeVI {
             // ...
         }
     }
-
 }

@@ -11,6 +11,8 @@ main:
 ! [CALLST (NAME print) ( (CONST 123))]
 ! [CALLST (NAME print) ()]
 ! [CALLST (NAME print) ( (CONST 1))]
+L$1:	.asciz "%d\n"
+L$2:	.asciz "123\n"
 
 !Total regs:  1
-!Total insts: 8
+!Total insts: 10
