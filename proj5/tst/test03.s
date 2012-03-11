@@ -24,7 +24,7 @@ L0:
 	mov 3,%l0
 	mov 4,%l3
 	cmp %l0,%l3
-	ble L1
+	bl L1
 	nop
 ! [MOVE (TEMP 2) (CONST 0)]
 	mov 0,%l0

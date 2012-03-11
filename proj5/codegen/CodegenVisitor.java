@@ -106,8 +106,8 @@ public class CodegenVisitor implements CodeVI {
         switch (op) {
         case CJUMP.EQ: return "be";
         case CJUMP.NE: return "bne";
-        case CJUMP.LT: return "ble";
-        case CJUMP.LE: return "bge";
+        case CJUMP.LT: return "bl";
+        case CJUMP.LE: return "ble";
         case CJUMP.GT: return "bg";
         case CJUMP.GE: return "bge";
         }
