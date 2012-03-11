@@ -220,8 +220,8 @@ public class CodegenVisitor implements CodeVI {
         case BINOP.SUB: return "-";
         case BINOP.MUL: return "smul";
         case BINOP.DIV: return "/";
-        case BINOP.AND: return "&&";
-        case BINOP.OR:  return "||";
+        case BINOP.AND: return "and";
+        case BINOP.OR:  return "or";
         }
         return "IDIOT";
     }

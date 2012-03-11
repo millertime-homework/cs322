@@ -25,8 +25,8 @@ L$L0:
 L$L1:
 ! [MOVE (VAR 1) (BINOP || (TEMP 1) (BINOP && (TEMP 2) (CONST 1)))]
 	mov 1,%l4
-	&& %l3,%l4,%l3
-	|| %l0,%l3,%l0
+	and %l3,%l4,%l3
+	or %l0,%l3,%l0
 	st %l0,[%fp-4]
 ! [MOVE (VAR 2) (BINOP - (BINOP + (CONST 2) (BINOP * (CONST 2) (CONST 4))) (BINOP / (CONST 9) (CONST 3)))]
 	mov 2,%l0
