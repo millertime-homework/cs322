@@ -161,15 +161,16 @@ public class CodegenVisitor implements CodeVI {
             Sparc.freeReg(Sparc.regO1);
         } else if (args != null && args.size() == 1
                    && (args.elementAt(0) instanceof VAR)) {
-            String str = "PRINTING A VAR";
-            String lab = "L$" + strCnt;
-            strBuf[strCnt++] = lab + ":\t.asciz \"" + str + "\\n\"";
+            Operand addr = args.elementAt(0).accept(this);
+            Sparc.getReg(Sparc.regO1);
+            Sparc.emitLoad(addr, Sparc.regO1);
             Sparc.getReg(Sparc.regO0);
-            Sparc.emit0("sethi %hi(" + lab + "),%o0");
-            Sparc.emit0("or %o0, %lo(" + lab + "),%o0");
+            Sparc.emit0("sethi %hi(L$1),%o0");
+            Sparc.emit0("or %o0, %lo(L$1),%o0");
             Sparc.emit0("call printf");
             Sparc.emit0("nop");
             Sparc.freeReg(Sparc.regO0);
+            Sparc.freeReg(Sparc.regO1);
         } else {
             String lab = "L$" + strCnt;
             strBuf[strCnt++] = lab + ":\t.asciz \"\\n\"";
@@ -232,7 +233,7 @@ public class CodegenVisitor implements CodeVI {
     public Operand visit(PARAM t) throws Exception { throw new Exception("PARAM"); }
     
     public Operand visit(VAR t) throws Exception {
-        return new RegOff(Sparc.regFP, 0-t.idx*4);
+        return new RegOff(Sparc.regFP, - t.idx * wordSize);
     }
 
     public Operand visit(CONST t) throws Exception {

@@ -17,27 +17,27 @@ main:
 	smul %l0,%l1,%l3
 	st %l0,[%fp-12]
 ! [CALLST (NAME print) ( (VAR 1))]
-	sethi %hi(L$2),%o0
-	or %o0, %lo(L$2),%o0
+	ld [%fp-4],%o1
+	sethi %hi(L$1),%o0
+	or %o0, %lo(L$1),%o0
 	call printf
 	nop
 ! [CALLST (NAME print) ( (VAR 2))]
-	sethi %hi(L$3),%o0
-	or %o0, %lo(L$3),%o0
+	ld [%fp-8],%o1
+	sethi %hi(L$1),%o0
+	or %o0, %lo(L$1),%o0
 	call printf
 	nop
 ! [CALLST (NAME print) ( (VAR 3))]
-	sethi %hi(L$4),%o0
-	or %o0, %lo(L$4),%o0
+	ld [%fp-12],%o1
+	sethi %hi(L$1),%o0
+	or %o0, %lo(L$1),%o0
 	call printf
 	nop
 	ret
 	restore
 
 L$1:	.asciz "%d\n"
-L$2:	.asciz "PRINTING A VAR\n"
-L$3:	.asciz "PRINTING A VAR\n"
-L$4:	.asciz "PRINTING A VAR\n"
 
 !Total regs:  4
 !Total insts: 32
