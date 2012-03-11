@@ -88,15 +88,34 @@ public class CodegenVisitor implements CodeVI {
     
     public void visit(CJUMP s) throws Exception {
         // bring operands to regs r1 and r2
-        // ...
-        // Sparc.emit2("cmp", r1, r2);
-        // Sparc.emit0(relopCode(s.op) + " " + label);
+        Operand left = s.left.accept(this);
+        Reg r1 = Sparc.getReg();
+        toReg(left, r1);
+        Reg r2 = Sparc.getReg();
+        Operand right = s.right.accept(this);
+        toReg(right, r2);
+        Sparc.emit2("cmp", r1, r2);
+        String label = s.target.id;
+        Sparc.emit0(relopCode(s.op) + " " + label);
         Sparc.emit0("nop");
-        // ...
+        Sparc.freeReg(r1);
+        Sparc.freeReg(r2);
+    }
+
+    private String relopCode(int op) {
+        switch (op) {
+        case CJUMP.EQ: return "be";
+        case CJUMP.NE: return "bne";
+        case CJUMP.LT: return "ble";
+        case CJUMP.LE: return "bge";
+        case CJUMP.GT: return "bg";
+        case CJUMP.GE: return "bge";
+        }
+        return "NOOB";
     }
 
     public void visit(LABEL t) throws Exception {
-        Sparc.emitNonInst("L$"+t.lab+":\n");
+        Sparc.emitNonInst(t.lab+":\n");
     }
 
     public void visit(CALLST s) throws Exception {

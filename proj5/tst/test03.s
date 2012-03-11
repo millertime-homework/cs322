@@ -7,22 +7,30 @@ main:
 	mov 1,%l0
 	mov 1,%l1
 ! [CJUMP > (CONST 1) (CONST 2) (NAME L0)]
+	mov 1,%l0
+	mov 2,%l2
+	cmp %l0,%l2
+	bg L0
 	nop
 ! [MOVE (TEMP 1) (CONST 0)]
 	mov 0,%l0
 	mov 0,%l1
 ! [LABEL L0]
-L$L0:
+L0:
 ! [MOVE (TEMP 2) (CONST 1)]
 	mov 1,%l0
 	mov 1,%l2
 ! [CJUMP < (CONST 3) (CONST 4) (NAME L1)]
+	mov 3,%l0
+	mov 4,%l3
+	cmp %l0,%l3
+	ble L1
 	nop
 ! [MOVE (TEMP 2) (CONST 0)]
 	mov 0,%l0
 	mov 0,%l2
 ! [LABEL L1]
-L$L1:
+L1:
 ! [MOVE (VAR 1) (BINOP || (TEMP 1) (BINOP && (TEMP 2) (CONST 1)))]
 	mov 1,%l4
 	and %l3,%l4,%l3
@@ -58,4 +66,4 @@ L$L1:
 L$1:	.asciz "%d\n"
 
 !Total regs:  5
-!Total insts: 42
+!Total insts: 50
