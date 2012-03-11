@@ -58,7 +58,7 @@ public class CodegenVisitor implements CodeVI {
     public void visit(MOVE s) throws Exception {
         Operand src = s.src.accept(this);
         Reg r = Sparc.getReg();
-        toReg(src, r);
+        //toReg(src, r);
         // generate code for s.src and bring result to a reg r
         // I DON'T KNOW WHAT I'M DOING
         if (s.dst instanceof TEMP) {

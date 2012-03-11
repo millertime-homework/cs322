@@ -4,7 +4,6 @@ main:
 !locals=2, max_args=0
 	save %sp,-104,%sp
 ! [MOVE (TEMP 1) (CONST 1)]
-	mov 1,%l0
 !>> Temp t1 assigned to reg %l1
 	mov 1,%l1
 ! [CJUMP > (CONST 1) (CONST 2) (NAME L0)]
@@ -14,12 +13,10 @@ main:
 	bg L0
 	nop
 ! [MOVE (TEMP 1) (CONST 0)]
-	mov 0,%l0
 	mov 0,%l1
 ! [LABEL L0]
 L0:
 ! [MOVE (TEMP 2) (CONST 1)]
-	mov 1,%l0
 !>> Temp t2 assigned to reg %l2
 	mov 1,%l2
 ! [CJUMP < (CONST 3) (CONST 4) (NAME L1)]
@@ -29,7 +26,6 @@ L0:
 	bl L1
 	nop
 ! [MOVE (TEMP 2) (CONST 0)]
-	mov 0,%l0
 	mov 0,%l2
 ! [LABEL L1]
 L1:
@@ -68,4 +64,4 @@ L1:
 L$1:	.asciz "%d\n"
 
 !Total regs:  5
-!Total insts: 50
+!Total insts: 46
