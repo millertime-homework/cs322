@@ -251,6 +251,7 @@ public class CodegenVisitor implements CodeVI {
         if (tempReg[t.num] == null) {
             Reg r = Sparc.getReg();
             tempReg[t.num] = r;
+            r.status = Reg.TEMP;
             Sparc.emitNonInst("!>> Temp t" + t.num + " assigned to reg " +
                               r.name + "\n");
         }
