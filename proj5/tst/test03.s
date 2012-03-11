@@ -5,6 +5,7 @@ main:
 	save %sp,-104,%sp
 ! [MOVE (TEMP 1) (CONST 1)]
 	mov 1,%l0
+!>> Temp t1assigned to reg %l1
 	mov 1,%l1
 ! [CJUMP > (CONST 1) (CONST 2) (NAME L0)]
 	mov 1,%l0
@@ -19,6 +20,7 @@ main:
 L0:
 ! [MOVE (TEMP 2) (CONST 1)]
 	mov 1,%l0
+!>> Temp t2assigned to reg %l2
 	mov 1,%l2
 ! [CJUMP < (CONST 3) (CONST 4) (NAME L1)]
 	mov 3,%l0
