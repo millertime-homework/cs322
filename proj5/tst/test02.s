@@ -35,9 +35,9 @@ main:
 	restore
 
 L$1:	.asciz "%d\n"
-L$2:	.asciz "\n"
-L$3:	.asciz "\n"
-L$4:	.asciz "\n"
+L$2:	.asciz "PRINTING A VAR\n"
+L$3:	.asciz "PRINTING A VAR\n"
+L$4:	.asciz "PRINTING A VAR\n"
 
 !Total regs:  4
 !Total insts: 32

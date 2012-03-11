@@ -145,7 +145,7 @@ public class CodegenVisitor implements CodeVI {
             Sparc.emit0("nop");
             Sparc.freeReg(Sparc.regO0);
         } else if (args != null && args.size() == 1
-            && (args.elementAt(0) instanceof CONST)) {
+                   && (args.elementAt(0) instanceof CONST)) {
             // print an integer: pass two arguments to printf, 
             // one control string at L$1 and one integer
             int val = ((CONST) args.elementAt(0)).val;
@@ -159,6 +159,17 @@ public class CodegenVisitor implements CodeVI {
             Sparc.emit0("nop");
             Sparc.freeReg(Sparc.regO0);
             Sparc.freeReg(Sparc.regO1);
+        } else if (args != null && args.size() == 1
+                   && (args.elementAt(0) instanceof VAR)) {
+            String str = "PRINTING A VAR";
+            String lab = "L$" + strCnt;
+            strBuf[strCnt++] = lab + ":\t.asciz \"" + str + "\\n\"";
+            Sparc.getReg(Sparc.regO0);
+            Sparc.emit0("sethi %hi(" + lab + "),%o0");
+            Sparc.emit0("or %o0, %lo(" + lab + "),%o0");
+            Sparc.emit0("call printf");
+            Sparc.emit0("nop");
+            Sparc.freeReg(Sparc.regO0);
         } else {
             String lab = "L$" + strCnt;
             strBuf[strCnt++] = lab + ":\t.asciz \"\\n\"";
