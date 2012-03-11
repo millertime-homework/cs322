@@ -122,10 +122,9 @@ public class CodegenVisitor implements CodeVI {
         String fname = s.func.id;
         if (fname.equals("print"))
             genPrint(s.args);
-        else if (fname.equals("error"))
+        else if (fname.equals("error")) {
             // genError();
-            nop();
-        else
+        } else
             genCall(fname, s.args);
     }
 
@@ -140,14 +139,9 @@ public class CodegenVisitor implements CodeVI {
 
     void genReturn(RETURN s) throws Exception {
         if (s.exp != null)
-            // generate code for s.exp and bring result to RegRV
-            nop();
+            toReg(s.exp.accept(this), Sparc.regI0);
         Sparc.emit0("ret");
         Sparc.emit0("restore");
-    }
-
-    void nop() {
-        return;
     }
 
     void genPrint(EXPlist args) throws Exception {
@@ -214,7 +208,22 @@ public class CodegenVisitor implements CodeVI {
     
     public Operand visit(ESEQ t) throws Exception { throw new Exception("ESEQ"); }
     public Operand visit(MEM t) throws Exception { throw new Exception("MEM"); }
-    public Operand visit(CALL t) throws Exception { throw new Exception("CALL"); }
+    public Operand visit(CALL t) throws Exception {
+        if (t.func.id.equals("malloc")) {
+            Operand op = t.args.elementAt(0).accept(this);
+            Sparc.emit2("move", op, Sparc.regO0);
+        } else {
+            for(int i=0; i < t.args.size(); i++) {
+                Reg r = Sparc.getReg();
+                Sparc.emitLoad(t.args.elementAt(i).accept(this), r);
+                Operand f = new RegOff(Sparc.regSP,68);
+                Sparc.emitStore(r, f);
+            }
+        }
+        Sparc.emit0("call " + t.func.id);
+        Sparc.emit0("nop");
+        return Sparc.regI0;
+    }
 
     public Operand visit(BINOP e) throws Exception {
         // Generate code for the two operands, and bring them to 
@@ -245,7 +254,9 @@ public class CodegenVisitor implements CodeVI {
         return "IDIOT";
     }
 
-    public Operand visit(NAME t) throws Exception { throw new Exception("NAME"); }
+    public Operand visit(NAME t) throws Exception {
+        return new Immed(wordSize);
+    }
     
     public Operand visit(TEMP t) throws Exception {
         if (tempReg[t.num] == null) {
@@ -258,7 +269,12 @@ public class CodegenVisitor implements CodeVI {
         return tempReg[t.num];
     }
 
-    public Operand visit(FIELD t) throws Exception { throw new Exception("FIELD"); }
+    public Operand visit(FIELD t) throws Exception {
+        Reg r = Sparc.getReg();
+        toReg(t.obj.accept(this), r);
+        return new RegOff(r, t.idx);
+    }
+
     public Operand visit(PARAM t) throws Exception { throw new Exception("PARAM"); }
     
     public Operand visit(VAR t) throws Exception {
