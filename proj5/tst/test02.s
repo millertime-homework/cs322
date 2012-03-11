@@ -9,12 +9,12 @@ main:
 ! [MOVE (VAR 2) (BINOP + (CONST 1) (CONST 1))]
 	mov 1,%l0
 	mov 1,%l1
-	+ %l0,%l1,%l2
+	add %l0,%l1,%l2
 	st %l0,[%fp-8]
 ! [MOVE (VAR 3) (BINOP * (CONST 3) (VAR 2))]
 	mov 3,%l0
 	ld [%fp-8],%l1
-	* %l0,%l1,%l3
+	smul %l0,%l1,%l3
 	st %l0,[%fp-12]
 ! [CALLST (NAME print) ( (VAR 1))]
 	sethi %hi(L$2),%o0
