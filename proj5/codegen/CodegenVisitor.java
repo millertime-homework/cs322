@@ -283,7 +283,7 @@ public class CodegenVisitor implements CodeVI {
             Sparc.emitLoad(t, r);
             // ...
         } else { // t instanceof Reg
-            // ...
+            Sparc.emit2("mov", t, r);
         }
     }
 }
