@@ -206,13 +206,12 @@ public class CodegenVisitor implements CodeVI {
         Operand right = e.right.accept(this);
         Reg r2 = Sparc.getReg();
         toReg(right, r2);
-        Reg r3 = Sparc.getReg();
         if (e.op == BINOP.DIV)
             Sparc.emit3("wr", Sparc.regG0, Sparc.regG0, Sparc.regY);
-        Sparc.emit3(binopCode(e.op), r1, r2, r3);
+        Sparc.emit3(binopCode(e.op), r1, r2, r1);
         Sparc.freeReg(r1);
         Sparc.freeReg(r2);
-        return r3;
+        return r1;
     }
 
     private String binopCode(int op) {
