@@ -217,9 +217,9 @@ public class CodegenVisitor implements CodeVI {
     private String binopCode(int op) {
         switch (op) {
         case BINOP.ADD: return "add";
-        case BINOP.SUB: return "-";
+        case BINOP.SUB: return "sub";
         case BINOP.MUL: return "smul";
-        case BINOP.DIV: return "/";
+        case BINOP.DIV: return "sdiv";
         case BINOP.AND: return "and";
         case BINOP.OR:  return "or";
         }

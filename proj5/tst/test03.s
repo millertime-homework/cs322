@@ -37,8 +37,8 @@ L$L1:
 	mov 9,%l3
 	mov 3,%l4
 	wr %g0,%g0,%y
-	/ %l3,%l4,%l3
-	- %l0,%l3,%l0
+	sdiv %l3,%l4,%l3
+	sub %l0,%l3,%l0
 	st %l0,[%fp-8]
 ! [CALLST (NAME print) ( (VAR 1))]
 	ld [%fp-4],%o1
