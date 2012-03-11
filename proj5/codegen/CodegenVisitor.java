@@ -227,7 +227,15 @@ public class CodegenVisitor implements CodeVI {
     }
 
     public Operand visit(NAME t) throws Exception { throw new Exception("NAME"); }
-    public Operand visit(TEMP t) throws Exception { throw new Exception("TEMP"); }
+    
+    public Operand visit(TEMP t) throws Exception {
+        if (tempReg[t.num] == null) {
+            Reg r = Sparc.getReg();
+            tempReg[t.num] = r;
+        }
+        return tempReg[t.num];
+    }
+
     public Operand visit(FIELD t) throws Exception { throw new Exception("FIELD"); }
     public Operand visit(PARAM t) throws Exception { throw new Exception("PARAM"); }
     
