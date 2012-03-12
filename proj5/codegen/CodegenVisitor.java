@@ -145,55 +145,44 @@ public class CodegenVisitor implements CodeVI {
     }
 
     void genPrint(EXPlist args) throws Exception {
-        if (args != null && args.size() == 1
-            && (args.elementAt(0) instanceof STRING)) { 
-            // print a string
-            String str = ((STRING) args.elementAt(0)).s;
-            String lab = "L$" + strCnt;
-            strBuf[strCnt++] = lab + ":\t.asciz \"" + str + "\\n\"";
-            Sparc.getReg(Sparc.regO0);
-            Sparc.emit0("sethi %hi(" + lab + "),%o0");
-            Sparc.emit0("or %o0, %lo(" + lab + "),%o0");
-            Sparc.emit0("call printf");
-            Sparc.emit0("nop");
-            Sparc.freeReg(Sparc.regO0);
-        } else if (args != null && args.size() == 1
-                   && (args.elementAt(0) instanceof CONST)) {
-            // print an integer: pass two arguments to printf, 
-            // one control string at L$1 and one integer
-            int val = ((CONST) args.elementAt(0)).val;
-            Sparc.getReg(Sparc.regO1);
-            Immed m = new Immed(val);
-            toReg(m, Sparc.regO1);
-            Sparc.getReg(Sparc.regO0);
-            Sparc.emit0("sethi %hi(L$1),%o0");
-            Sparc.emit0("or %o0, %lo(L$1),%o0");
-            Sparc.emit0("call printf");
-            Sparc.emit0("nop");
-            Sparc.freeReg(Sparc.regO0);
-            Sparc.freeReg(Sparc.regO1);
-        } else if (args != null && args.size() == 1
-                   && (args.elementAt(0) instanceof VAR)) {
-            Operand addr = args.elementAt(0).accept(this);
-            Sparc.getReg(Sparc.regO1);
-            Sparc.emitLoad(addr, Sparc.regO1);
-            Sparc.getReg(Sparc.regO0);
-            Sparc.emit0("sethi %hi(L$1),%o0");
-            Sparc.emit0("or %o0, %lo(L$1),%o0");
-            Sparc.emit0("call printf");
-            Sparc.emit0("nop");
-            Sparc.freeReg(Sparc.regO0);
-            Sparc.freeReg(Sparc.regO1);
-        } else if (args != null && args.size() == 1
-                   && (args.elementAt(0) instanceof BINOP)) {
-            Operand r = args.elementAt(0).accept(this);
-            toReg(r, Sparc.regO1);
-            Sparc.emit0("sethi %hi(L$1),%o0");
-            Sparc.emit0("or %o0, %lo(L$1),%o0");
-            Sparc.emit0("call printf");
-            Sparc.emit0("nop");
-            Sparc.freeReg(Sparc.regO0);
-            Sparc.freeReg(Sparc.regO1);
+        if (args != null && args.size() == 1) {
+            if (args.elementAt(0) instanceof STRING) { 
+                // print a string
+                String str = ((STRING) args.elementAt(0)).s;
+                String lab = "L$" + strCnt;
+                strBuf[strCnt++] = lab + ":\t.asciz \"" + str + "\\n\"";
+                Sparc.getReg(Sparc.regO0);
+                Sparc.emit0("sethi %hi(" + lab + "),%o0");
+                Sparc.emit0("or %o0, %lo(" + lab + "),%o0");
+                Sparc.emit0("call printf");
+                Sparc.emit0("nop");
+                Sparc.freeReg(Sparc.regO0);
+            } else if (args.elementAt(0) instanceof CONST) {
+                // print an integer: pass two arguments to printf, 
+                // one control string at L$1 and one integer
+                int val = ((CONST) args.elementAt(0)).val;
+                Sparc.getReg(Sparc.regO1);
+                Immed m = new Immed(val);
+                toReg(m, Sparc.regO1);
+                Sparc.getReg(Sparc.regO0);
+                Sparc.emit0("sethi %hi(L$1),%o0");
+                Sparc.emit0("or %o0, %lo(L$1),%o0");
+                Sparc.emit0("call printf");
+                Sparc.emit0("nop");
+                Sparc.freeReg(Sparc.regO0);
+                Sparc.freeReg(Sparc.regO1);
+            } else {
+                Operand addr = args.elementAt(0).accept(this);
+                Sparc.getReg(Sparc.regO1);
+                Sparc.emitLoad(addr, Sparc.regO1);
+                Sparc.getReg(Sparc.regO0);
+                Sparc.emit0("sethi %hi(L$1),%o0");
+                Sparc.emit0("or %o0, %lo(L$1),%o0");
+                Sparc.emit0("call printf");
+                Sparc.emit0("nop");
+                Sparc.freeReg(Sparc.regO0);
+                Sparc.freeReg(Sparc.regO1);
+            }
         } else {
             String lab = "L$" + strCnt;
             strBuf[strCnt++] = lab + ":\t.asciz \"\\n\"";

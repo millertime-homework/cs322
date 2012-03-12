@@ -22,8 +22,9 @@ main:
 !>> Temp t3 assigned to reg %l3
 	mov %o0,%l3
 ! [CALLST (NAME print) ( (TEMP 3))]
-	sethi %hi(L$2),%o0
-	or %o0, %lo(L$2),%o0
+	ld [%l3],%o1
+	sethi %hi(L$1),%o0
+	or %o0, %lo(L$1),%o0
 	call printf
 	nop
 	ret
@@ -74,7 +75,6 @@ Body2_value:
 	restore
 
 L$1:	.asciz "%d\n"
-L$2:	.asciz "\n"
 
 !Total regs:  7
 !Total insts: 58
