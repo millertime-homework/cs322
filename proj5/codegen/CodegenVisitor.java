@@ -184,6 +184,16 @@ public class CodegenVisitor implements CodeVI {
             Sparc.emit0("nop");
             Sparc.freeReg(Sparc.regO0);
             Sparc.freeReg(Sparc.regO1);
+        } else if (args != null && args.size() == 1
+                   && (args.elementAt(0) instanceof BINOP)) {
+            Operand r = args.elementAt(0).accept(this);
+            toReg(r, Sparc.regO1);
+            Sparc.emit0("sethi %hi(L$1),%o0");
+            Sparc.emit0("or %o0, %lo(L$1),%o0");
+            Sparc.emit0("call printf");
+            Sparc.emit0("nop");
+            Sparc.freeReg(Sparc.regO0);
+            Sparc.freeReg(Sparc.regO1);
         } else {
             String lab = "L$" + strCnt;
             strBuf[strCnt++] = lab + ":\t.asciz \"\\n\"";

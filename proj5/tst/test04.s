@@ -24,15 +24,19 @@ main:
 	ld [%fp-4],%l2
 	st %l0,[%l2]
 ! [CALLST (NAME print) ( (BINOP + (VAR 2) (FIELD (VAR 1) 0)))]
-	sethi %hi(L$2),%o0
-	or %o0, %lo(L$2),%o0
+	ld [%fp-8],%l0
+	ld [%fp-4],%l3
+	ld [%l3],%l4
+	add %l0,%l4,%l0
+	mov %l0,%o1
+	sethi %hi(L$1),%o0
+	or %o0, %lo(L$1),%o0
 	call printf
 	nop
 	ret
 	restore
 
 L$1:	.asciz "%d\n"
-L$2:	.asciz "\n"
 
-!Total regs:  3
-!Total insts: 26
+!Total regs:  5
+!Total insts: 30
