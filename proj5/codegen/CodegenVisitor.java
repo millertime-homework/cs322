@@ -222,7 +222,7 @@ public class CodegenVisitor implements CodeVI {
         }
         Sparc.emit0("call " + t.func.id);
         Sparc.emit0("nop");
-        return Sparc.regI0;
+        return Sparc.regO0;
     }
 
     public Operand visit(BINOP e) throws Exception {

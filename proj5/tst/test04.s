@@ -7,9 +7,9 @@ main:
 	mov 4,%o0
 	call malloc
 	nop
-	mov %i0,%l0
+	mov %o0,%l0
 !>> Temp t1 assigned to reg %l1
-	mov %i0,%l1
+	mov %o0,%l1
 ! [MOVE (MEM (TEMP 1)) (CONST 0)]
 	mov 0,%l0
 	st %l0,[%l1]
