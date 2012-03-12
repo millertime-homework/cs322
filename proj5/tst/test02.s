@@ -4,16 +4,19 @@ main:
 !locals=3, max_args=0
 	save %sp,-104,%sp
 ! [MOVE (VAR 1) (CONST 1)]
+	mov 1,%l0
 	st %l0,[%fp-4]
 ! [MOVE (VAR 2) (BINOP + (CONST 1) (CONST 1))]
 	mov 1,%l0
 	mov 1,%l1
 	add %l0,%l1,%l0
+	mov %l0,%l0
 	st %l0,[%fp-8]
 ! [MOVE (VAR 3) (BINOP * (CONST 3) (VAR 2))]
 	mov 3,%l0
 	ld [%fp-8],%l1
 	smul %l0,%l1,%l0
+	mov %l0,%l0
 	st %l0,[%fp-12]
 ! [CALLST (NAME print) ( (VAR 1))]
 	ld [%fp-4],%o1
@@ -39,4 +42,4 @@ main:
 L$1:	.asciz "%d\n"
 
 !Total regs:  2
-!Total insts: 31
+!Total insts: 34
