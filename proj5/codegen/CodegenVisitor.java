@@ -285,7 +285,9 @@ public class CodegenVisitor implements CodeVI {
         return new RegOff(r, t.idx);
     }
 
-    public Operand visit(PARAM t) throws Exception { throw new Exception("PARAM"); }
+    public Operand visit(PARAM t) throws Exception {
+        return new RegOff(Sparc.regFP, 68+4*t.idx);
+    }
     
     public Operand visit(VAR t) throws Exception {
         return new RegOff(Sparc.regFP, - t.idx * wordSize);
