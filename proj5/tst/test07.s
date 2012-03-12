@@ -41,7 +41,7 @@ Body_go:
 	save %sp,-96,%sp
 ! [RETURN (BINOP + (BINOP + (PARAM 1) (PARAM 2)) (PARAM 3))]
 	ret
-	return
+	restore
 	ret
 	restore
 

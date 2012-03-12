@@ -59,7 +59,7 @@ Body_go:
 	mov %o0,%l6
 ! [RETURN (TEMP 4)]
 	ret
-	return
+	restore
 	ret
 	restore
 
@@ -69,7 +69,7 @@ Body2_value:
 	save %sp,-96,%sp
 ! [RETURN (BINOP + (BINOP + (PARAM 1) (PARAM 2)) (PARAM 3))]
 	ret
-	return
+	restore
 	ret
 	restore
 

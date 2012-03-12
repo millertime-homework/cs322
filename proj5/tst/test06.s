@@ -49,7 +49,7 @@ Body_go:
 	st %l2,[%fp-4]
 ! [RETURN (VAR 1)]
 	ret
-	return
+	restore
 	ret
 	restore
 
