@@ -211,7 +211,7 @@ public class CodegenVisitor implements CodeVI {
     public Operand visit(CALL t) throws Exception {
         if (t.func.id.equals("malloc")) {
             Operand op = t.args.elementAt(0).accept(this);
-            Sparc.emit2("move", op, Sparc.regO0);
+            Sparc.emit2("mov", op, Sparc.regO0);
         } else {
             for(int i=0; i < t.args.size(); i++) {
                 Reg r = Sparc.getReg();
