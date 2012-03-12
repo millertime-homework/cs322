@@ -4,7 +4,7 @@ main:
 !locals=2, max_args=0
 	save %sp,-104,%sp
 ! [MOVE (TEMP 1) (CALL (NAME malloc) ( (NAME wSZ)))]
-	move 4,%o0
+	mov 4,%o0
 	call malloc
 	nop
 !>> Temp t1 assigned to reg %l1
