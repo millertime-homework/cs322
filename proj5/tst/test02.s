@@ -4,7 +4,6 @@ main:
 !locals=3, max_args=0
 	save %sp,-104,%sp
 ! [MOVE (VAR 1) (CONST 1)]
-	mov 1,%l0
 	st %l0,[%fp-4]
 ! [MOVE (VAR 2) (BINOP + (CONST 1) (CONST 1))]
 	mov 1,%l0
@@ -40,4 +39,4 @@ main:
 L$1:	.asciz "%d\n"
 
 !Total regs:  2
-!Total insts: 32
+!Total insts: 31
