@@ -28,7 +28,7 @@ main:
 	ld [%fp-4],%l3
 	ld [%l3],%l4
 	add %l0,%l4,%l0
-	mov %l0,%o1
+	ld [%l0],%o1
 	sethi %hi(L$1),%o0
 	or %o0, %lo(L$1),%o0
 	call printf

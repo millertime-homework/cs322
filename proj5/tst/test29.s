@@ -4,7 +4,7 @@ A_A:
 	save %sp,-96,%sp
 ! [RETURN (PARAM 1)]
 	ret
-	return
+	restore
 	ret
 	restore
 
@@ -14,4 +14,46 @@ main:
 !locals=2, max_args=2
 	save %sp,-104,%sp
 ! [MOVE (TEMP 1) (CALL (NAME malloc) ( (NAME wSZ)))]
-	mov 
+	mov 4,%o0
+	call malloc
+	nop
+	mov %o0,%l0
+!>> Temp t1 assigned to reg %l1
+	mov %o0,%l1
+! [MOVE (MEM (TEMP 1)) (CONST 0)]
+	mov 0,%l0
+	st %l0,[%l1]
+! [MOVE (VAR 2) (TEMP 1)]
+	mov %l1,%l0
+	st %l0,[%fp-8]
+! [MOVE (TEMP 2) (CALL (NAME A_A) ( (VAR 2) (CONST 1)))]
+	ld [%fp-8],%l0
+	st %l0,[%sp+68]
+	ld [1],%l2
+	st %l2,[%sp+68]
+	call A_A
+	nop
+	mov %o0,%l3
+!>> Temp t2 assigned to reg %l4
+	mov %o0,%l4
+! [MOVE (FIELD (VAR 2) 0) (TEMP 2)]
+	mov %l4,%l3
+	ld [%fp-8],%l5
+	st %l3,[%l5]
+! [MOVE (VAR 1) (FIELD (VAR 2) 0)]
+	ld [%fp-8],%l3
+	ld [%l3],%l6
+	st %l6,[%fp-4]
+! [CALLST (NAME print) ( (VAR 1))]
+	ld [%fp-4],%o1
+	sethi %hi(L$1),%o0
+	or %o0, %lo(L$1),%o0
+	call printf
+	nop
+	ret
+	restore
+
+L$1:	.asciz "%d\n"
+
+!Total regs:  8
+!Total insts: 42
